@@ -18,6 +18,10 @@ class User:
         self.list_of_users = []
 
 
+    """ -- CLASS METHODS -- """
+
+
+    # Create one
     @classmethod
     def create_user(cls, data):
         query = """
@@ -48,6 +52,9 @@ class User:
         return cls(result[0])
 
 
+    """ -- STATIC METHODS -- """
+
+
     # User validation method
     @staticmethod
     def validate_registration(data):
@@ -76,6 +83,34 @@ class User:
         # Password confirmation validation
         if data['password'] != data['confirm_password']:
             flash("Password mismatch. Please confirm both password fields match", "error_password")
+            is_valid = False
+
+        return is_valid
+
+
+    # Login email validation method
+    @staticmethod
+    def validate_login_email(email):
+        is_valid = True
+        if not EMAIL_REGEX.match(email):
+            flash("Required field. Please provide a valid email address to log in", "error_login_email")
+            is_valid = False
+        elif User.get_one_by_email({'email': email}) is None:
+            flash("No account found. Please check email and try again", "error_login_email")
+            is_valid = False
+
+        return is_valid
+
+
+    # Login password validation
+    @staticmethod
+    def validate_password(hashed_password, unhashed_password):
+        is_valid = True
+        if len(unhashed_password) == 0:
+            flash("Required field. Please provide a valid password to log in", "error_login_password")
+            is_valid = False
+        if not bcrypt.check_password_hash(hashed_password, unhashed_password):
+            flash("Invalid password. Please check password and try again", "error_login_password")
             is_valid = False
 
         return is_valid
