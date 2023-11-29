@@ -16,6 +16,8 @@ def register_new_user():
         # redirect back to registration page in case of invalid registration
         return redirect("/")
 
-    user_id = User.create_user(request.form)
+    session['user_id'] = User.create_user(
+        {**request.form, 'password': User.encrypt_string(request.form['password'])}
+    )
 
     return redirect("/")

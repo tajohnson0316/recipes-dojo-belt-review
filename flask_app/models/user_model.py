@@ -3,7 +3,6 @@ from flask_app import DATABASE, EMAIL_REGEX, app
 from flask import flash
 from flask_bcrypt import Bcrypt
 
-
 bcrypt = Bcrypt(app)
 
 
@@ -80,3 +79,9 @@ class User:
             is_valid = False
 
         return is_valid
+
+
+    # Encrypt password
+    @staticmethod
+    def encrypt_string(text):
+        return bcrypt.generate_password_hash(text)
