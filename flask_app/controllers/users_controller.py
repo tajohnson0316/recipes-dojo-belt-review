@@ -11,6 +11,11 @@ def display_login_registration():
 
 @app.route("/users/new", methods=['POST'])
 def register_new_user():
+    # call User's static method to validate user registration
+    if not User.validate_registration(request.form):
+        # redirect back to registration page in case of invalid registration
+        return redirect("/")
+
     user_id = User.create_user(request.form)
 
     return redirect("/")
